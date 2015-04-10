@@ -1,0 +1,129 @@
+<html>
+<body>
+
+<center>
+<canvas id = 'game' width = '300' height = '600' style = 'border: 1px solid #000000; background: #47a7de;'>
+</canvas>
+</center>
+
+<script src = 'Js/click().js'></script>
+<script src = 'Js/Menu.js'></script>
+<script src = 'Js/Game.js'></script>
+<script src = 'Js/Pause.js'></script>
+<script src = 'Js/Credits.js'></script>
+<script src = 'Js/GameOver.js'></script>
+
+<script>
+
+	var canvas = document.getElementById('game');
+	var context = canvas.getContext('2d');
+
+	var scene = 'menu';
+	
+	
+	var menu = new Menu();
+	var game = new Game();
+	var pause = new Pause();
+	var credits = new Credits();
+	var gameOver = new GameOver();
+	
+
+	var back = new Image();
+	back.src = 'Assets/Teclas/back.png';
+	
+	var back_w = 105;
+	var back_h = 40;
+	var back_x = 100;
+	var back_y = 420;
+	
+	
+	var time = 300;
+	
+	
+	var mouseX = 0;
+	var mouseY = 0;
+	
+	function mouseMove(e)
+	{
+		mouseX = e.x;
+		mouseY = e.y;
+		mouseX -= canvas.offsetLeft; //margem esquerda ao canvas
+		mouseY -= canvas.offsetTop; //margem superior ao canvas
+		console.log('mouse is work');
+	}
+	
+	function mouseDown(e) 
+	{
+		click(mouseX,mouseY);
+		console.log('x: ' + e.x + '  y: ' + e.y);
+	}
+	
+	document.addEventListener('mousemove',mouseMove,false);
+	document.addEventListener('mousedown',mouseDown,false);
+	
+	
+	
+	function restart()
+	{
+		game.ballon_x = canvas.width / 2 - game.ballon.width /2;
+		game.ballon_y = canvas.height
+		
+		game.array_y1 = -game.array.height;
+		game.array_y2 = -canvas.height;
+		
+		time = 300;
+	}
+	
+	
+	function killPlayer()
+	{
+		scene = 'gameOver';
+	}
+	
+	
+	function update()
+	{
+		if(scene == 'game')
+		{
+			game.update();
+			time--;
+			console.log(time);
+		}
+		
+		if(time < 0) 
+		{
+			scene = 'gameOver';
+		}
+	}
+	
+	if(scene == 'gameOver') restart();
+	
+	function draw()
+	{
+		context.clearRect(0,0,canvas.width,canvas.height);
+		
+		if(scene == 'menu') menu.draw();
+		
+		if(scene == 'game') game.draw();
+
+		if(scene == 'pause') pause.draw();
+		
+		if(scene == 'gameOver') gameOver.draw();
+		
+		if(scene == 'credits') credits.draw();
+	}
+	
+	
+	function loop()
+	{
+		draw();
+		update();
+		setTimeout(loop,30);
+	}
+	
+	loop();
+	
+</script>
+
+</body>
+</html>
